@@ -1,0 +1,44 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Web Analytics API",
+		"version": "1.0.0",
+		"description": "A lightweight API to collect user interactions and device data, stored in Cloudflare D1."
+	},
+	"servers": [{ "url": "/", "description": "Current Environment" }],
+	"paths": {
+		"/track": {
+			"post": {
+				"summary": "Track a user event",
+				"description": "Records a web analytics event and automatically appends Cloudflare geolocation and device data.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["event_type", "page_url"],
+								"properties": {
+									"session_id": { "type": "string", "description": "Anonymous session identifier" },
+									"event_type": { "type": "string", "description": "Type of event (e.g., pageview, click)" },
+									"page_url": { "type": "string", "description": "The URL where the event occurred" },
+									"extra_data": { "type": "object", "description": "Any custom JSON data to attach to the event" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Event successfully tracked",
+						"content": {
+							"application/json": { "schema": { "type": "object", "properties": { "status": { "type": "string", "example": "ok" } } } }
+						}
+					},
+					"405": { "description": "Method Not Allowed" },
+					"500": { "description": "Internal Server Error" }
+				}
+			}
+		}
+	}
+}
